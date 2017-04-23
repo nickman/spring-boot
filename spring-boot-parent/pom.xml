@@ -205,6 +205,11 @@
 				<version>1.0.4</version>
 			</dependency>
 			<dependency>
+			  <groupId>org.glassfish.main.external</groupId>
+			  <artifactId>jmxremote_optional-repackaged</artifactId>
+			  <version>4.1</version>
+			</dependency>			
+			<dependency>
 				<groupId>org.sonatype.plexus</groupId>
 				<artifactId>plexus-build-api</artifactId>
 				<version>0.0.7</version>

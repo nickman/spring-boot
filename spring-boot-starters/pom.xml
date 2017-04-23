@@ -46,6 +46,7 @@
 		<module>spring-boot-starter-jdbc</module>
 		<module>spring-boot-starter-jersey</module>
 		<module>spring-boot-starter-jetty</module>
+		<module>spring-boot-starter-jmxmp</module>
 		<module>spring-boot-starter-jooq</module>
 		<module>spring-boot-starter-jta-atomikos</module>
 		<module>spring-boot-starter-jta-bitronix</module>

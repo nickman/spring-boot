@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starters</artifactId>
+		<version>2.0.0.BUILD-SNAPSHOT</version>
+	</parent>
+	<artifactId>spring-boot-starter-jmxmp</artifactId>
+	<name>Spring Boot JMXMP Starter</name>
+	<description>Starter for running a JMXMP JMX connector server. A convenient
+		and alternative to the standard RMI connector.</description>
+	<url>http://projects.spring.io/spring-boot/</url>
+	<organization>
+		<name>Pivotal Software, Inc.</name>
+		<url>http://www.spring.io</url>
+	</organization>
+	<properties>
+		<main.basedir>${basedir}/../..</main.basedir>
+	</properties>
+	<dependencies>
+		<dependency>
+		  <groupId>org.glassfish.main.external</groupId>
+		  <artifactId>jmxremote_optional-repackaged</artifactId>
+		  <version>4.1</version>
+		</dependency>		
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.basepom.maven</groupId>
+				<artifactId>duplicate-finder-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>duplicate-dependencies</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<ignoredResourcePatterns>
+								<ignoredResourcePattern>about.html</ignoredResourcePattern>
+							</ignoredResourcePatterns>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
