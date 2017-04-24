@@ -141,7 +141,7 @@ public class JMXMPAutoConfigurationTests {
 				this.context.close();
 			}
 			catch (Exception ex) {
-				/* No Op */}
+				/* No Op */ }
 			this.context = null;
 		}
 	}

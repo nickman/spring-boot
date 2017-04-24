@@ -107,14 +107,14 @@ public class JMXMPAutoConfiguration
 					logger.info("Stopped JMXMPConnectorServer");
 				}
 				catch (IOException e) {
-					/* No Op */}
+					/* No Op */ }
 			}
 			if (this.objectName != null && this.server != null) {
 				try {
 					this.server.unregisterMBean(this.objectName);
 				}
 				catch (Exception e) {
-					/* No Op */}
+					/* No Op */ }
 			}
 
 		}

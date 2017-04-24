@@ -40,7 +40,7 @@ public class PropertiesFileCallbackHandler implements CallbackHandler {
 	protected final Map<String, String> userPasswords;
 
 	/**
-	 * Creates a new PropertiesFileCallbackHandler
+	 * Creates a new PropertiesFileCallbackHandler.
 	 * @param authSource The authentication source. Can be a file, a URL or a classpath
 	 * resource containing java properties.
 	 */
@@ -60,7 +60,7 @@ public class PropertiesFileCallbackHandler implements CallbackHandler {
 		final String src = authSource.trim();
 		final File file = new File(src);
 		if (file.exists()) {
-
+			return load(file);
 		}
 		else {
 			URL url = toURL(src);
@@ -70,7 +70,6 @@ public class PropertiesFileCallbackHandler implements CallbackHandler {
 			url = PropertiesFileCallbackHandler.class.getClassLoader().getResource(src);
 			return load(url);
 		}
-		return null;
 	}
 
 	protected static URL toURL(final String src) {
@@ -107,7 +106,7 @@ public class PropertiesFileCallbackHandler implements CallbackHandler {
 					is.close();
 				}
 				catch (Exception x) {
-					/* No Op */}
+					/* No Op */ }
 			}
 		}
 	}
@@ -137,7 +136,7 @@ public class PropertiesFileCallbackHandler implements CallbackHandler {
 					is.close();
 				}
 				catch (Exception x) {
-					/* No Op */}
+					/* No Op */ }
 			}
 		}
 

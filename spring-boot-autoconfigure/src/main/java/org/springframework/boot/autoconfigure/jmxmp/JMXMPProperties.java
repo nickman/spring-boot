@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Configuration properties for a JMXMP connector server
+ * Configuration properties for a JMXMP connector server.
  * @author nwhitehead TODO: Add support for authentication and authorization
  */
 @ConfigurationProperties(prefix = "spring.jmxmp")
@@ -45,60 +45,60 @@ public class JMXMPProperties {
 	public static final String DEFAULT_DOMAIN = "DefaultDomain";
 
 	/**
-	 * JMXServiceURL template used
+	 * JMXServiceURL template used.
 	 */
 	public static final String JMX_SERVICE_URL = "service:jmx:jmxmp://%s:%s";
 
 	/**
-	 * The default connector server MBean's ObjectName
+	 * The default connector server MBean's ObjectName.
 	 */
 	public static final String DEFAULT_OBJECT_NAME = "javax.management.remote.jmxmp:service=JMXMPConnectorServer";
 
 	/**
-	 * The default mbean registration disablement
+	 * The default mbean registration disablement.
 	 */
 	public static final boolean DEFAULT_DISABLE_MBEAN = false;
 
 	/**
-	 * The default security provider class name
+	 * The default security provider class name.
 	 */
 	public static final String PROVIDER = "com.sun.security.sasl.Provider";
 
 	/**
-	 * The default security profile
+	 * The default security profile.
 	 */
 	public static final String PROFILE = "TLS SASL/PLAIN";
 
 	private static final Log logger = LogFactory.getLog(JMXMPProperties.class);
 
 	/**
-	 * The JMXMP connector server binding interface
+	 * The JMXMP connector server binding interface.
 	 */
 	private String bindInterface;
 
 	/**
-	 * The JMXMP connector server listening port
+	 * The JMXMP connector server listening port.
 	 */
 	private Integer port = null;
 
 	/**
-	 * The MBeanServer's default domain name
+	 * The MBeanServer's default domain name.
 	 */
 	private String domain;
 
 	/**
 	 * Indicates if the JMXMP connector server's management interface should NOT be
-	 * registered
+	 * registered.
 	 */
 	private boolean disableMBean = DEFAULT_DISABLE_MBEAN;
 
 	/**
-	 * The MBeanServer's management interface JMX ObjectName
+	 * The MBeanServer's management interface JMX ObjectName.
 	 */
 	private String objectName;
 
 	/**
-	 * Returns the interface to bind to
+	 * Returns the interface to bind to.
 	 * @return the bindInterface
 	 */
 	public String getBindInterface() {
@@ -106,7 +106,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Sets the interface to bind to
+	 * Sets the interface to bind to.
 	 * @param bindInterface the bindInterface to set
 	 */
 	public void setBindInterface(String bindInterface) {
@@ -114,7 +114,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the MBeanServer's default domain
+	 * Returns the MBeanServer's default domain.
 	 * @return the default domain
 	 */
 	public String getDomain() {
@@ -122,7 +122,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Sets the MBeanServer's default domain
+	 * Sets the MBeanServer's default domain.
 	 * @param domain the domain to set
 	 */
 	public void setDomain(String domain) {
@@ -130,7 +130,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the listening port
+	 * Returns the listening port.
 	 * @return the port
 	 */
 	public Integer getPort() {
@@ -138,7 +138,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Sets the listening port
+	 * Sets the listening port.
 	 * @param port the port to set
 	 */
 	public void setPort(Integer port) {
@@ -146,7 +146,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the configured JMXServiceURL
+	 * Returns the configured JMXServiceURL.
 	 * @return the configured JMXServiceURL
 	 */
 	public String determineServiceURL() {
@@ -156,7 +156,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the configured MBeanServer default domain name
+	 * Returns the configured MBeanServer default domain name.
 	 * @return the default domain name
 	 */
 	public String determineDefaultDomain() {
@@ -164,7 +164,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the configured or default management interface ObjectName
+	 * Returns the configured or default management interface ObjectName.
 	 * @return the ObjectName
 	 */
 	public ObjectName determineObjectName() {
@@ -184,7 +184,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Returns the configured management interface JMX ObjectName
+	 * Returns the configured management interface JMX ObjectName.
 	 * @return the objectName
 	 */
 	public String getObjectName() {
@@ -192,7 +192,7 @@ public class JMXMPProperties {
 	}
 
 	/**
-	 * Sets the management interface JMX ObjectName
+	 * Sets the management interface JMX ObjectName.
 	 * @param objectName the objectName to set
 	 */
 	public void setObjectName(String objectName) {
@@ -201,7 +201,7 @@ public class JMXMPProperties {
 
 	/**
 	 * Indicates if the JMXMP connector server's management interface should NOT be
-	 * registered
+	 * registered.
 	 * @return true if the management interface should NOT be registered, false otherwise.
 	 */
 	public boolean isDisableMBean() {
@@ -210,7 +210,7 @@ public class JMXMPProperties {
 
 	/**
 	 * Specifies if the JMXMP connector server's management interface should NOT be
-	 * registered
+	 * registered.
 	 * @param disableMBean true to disable, false otherise
 	 */
 	public void setDisableMBean(boolean disableMBean) {
