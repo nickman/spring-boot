@@ -16,6 +16,16 @@
 
 package org.springframework.boot.autoconfigure.jmxmp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.management.ObjectName;
 
 import org.apache.commons.logging.Log;
@@ -25,7 +35,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Configuration properties for a JMXMP connector server.
- * @author nwhitehead TODO: Add support for authentication and authorization
+ * @author nwhitehead TODO: Add support for authentication and authorization. See:
+ * https://blogs.oracle.com/lmalventosa/entry/jmx_authentication_authorization
  */
 @ConfigurationProperties(prefix = "spring.jmxmp")
 public class JMXMPProperties {
@@ -58,6 +69,27 @@ public class JMXMPProperties {
 	 * The default mbean registration disablement.
 	 */
 	public static final boolean DEFAULT_DISABLE_MBEAN = false;
+
+	/**
+	 * The environment constant for the JAAS login module name.
+	 */
+	public static final String JMX_JAAS_MODULE = "jmx.remote.x.login.config";
+
+	/**
+	 * The environment constant for the authorization rights file or URL or resource name.
+	 */
+	public static final String JMX_AUTH_FILE = "jmx.remote.x.access.file";
+
+	/**
+	 * The environment constant for the authentication password file or URL or resource
+	 * name.
+	 */
+	public static final String JMX_PASSWD_FILE = "jmx.remote.x.password.file";
+
+	/**
+	 * The environment constant for the JMXAuthenticator class name.
+	 */
+	public static final String JMX_AUTHENTICATOR = "jmx.remote.authenticator";
 
 	/**
 	 * The default security provider class name.
@@ -215,6 +247,163 @@ public class JMXMPProperties {
 	 */
 	public void setDisableMBean(boolean disableMBean) {
 		this.disableMBean = disableMBean;
+	}
+
+	/**
+	 * Enumerates the possible outcomes of determining the source type for an arbitrary
+	 * string intended to reference a properties source.
+	 */
+	public static enum ResourceType {
+		FILE, URL, RESOURCE, UNKNOWN;
+	}
+
+	public static class PropertiesResource {
+		final ResourceType resourceType;
+		final String resourceName;
+		final File file;
+		final URL url;
+
+		public static final String PID = ManagementFactory.getRuntimeMXBean().getName()
+				.split("@")[0];
+		public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+
+		private PropertiesResource(final String name) {
+			if (name == null || name.trim().isEmpty()) {
+				throw new IllegalArgumentException("The passed name was null or empty");
+			}
+			this.resourceName = name.trim();
+			if (isURL(this.resourceName)) {
+				this.resourceType = ResourceType.URL;
+				this.url = toURL(this.resourceName);
+				this.file = null;
+			}
+			else if (isFile(this.resourceName)) {
+				this.resourceType = ResourceType.FILE;
+				this.url = null;
+				this.file = new File(this.resourceName);
+			}
+			else if (isResource(this.resourceName)) {
+				this.resourceType = ResourceType.RESOURCE;
+				this.url = JMXMPProperties.class.getResource(this.resourceName);
+				this.file = null;
+			}
+			else {
+				this.resourceType = ResourceType.UNKNOWN;
+				this.url = null;
+				this.file = null;
+			}
+		}
+
+		public String toFile(final String prefix, final String suffix) {
+			if (this.resourceType == ResourceType.FILE) {
+				return this.file.getAbsolutePath();
+			}
+			if (this.resourceType == ResourceType.UNKNOWN) {
+				throw new IllegalStateException(
+						"Unrecognized resource type [" + this.resourceName + "]");
+			}
+			FileOutputStream fos = null;
+			InputStream is = null;
+			final byte[] buff = new byte[2048];
+			int bytesRead = -1;
+			try {
+				final File copiedFile = File.createTempFile(PID + "-" + prefix, suffix,
+						new File(TMP_DIR));
+				copiedFile.deleteOnExit();
+				fos = new FileOutputStream(copiedFile, false);
+				is = this.url.openStream();
+				while ((bytesRead = is.read(buff)) != -1) {
+					fos.write(buff, 0, bytesRead);
+				}
+				fos.flush();
+				fos.close();
+				fos = null;
+				is.close();
+				is = null;
+				return copiedFile.getAbsolutePath();
+			}
+			catch (IOException e) {
+				throw new RuntimeException(
+						"Failed to create temp file [" + prefix + "/" + suffix + "]", e);
+			}
+			finally {
+				if (fos != null) {
+					try {
+						fos.close();
+					}
+					catch (Exception x) {
+						/* No Op */ }
+				}
+				if (is != null) {
+					try {
+						is.close();
+					}
+					catch (Exception x) {
+						/* No Op */ }
+				}
+			}
+		}
+
+		public InputStream inputStream() {
+			switch (this.resourceType) {
+			case FILE:
+				try {
+					return new FileInputStream(this.file);
+				}
+				catch (FileNotFoundException e) {
+					throw new IllegalStateException(
+							"Failed to read file [" + this.file + "] (Not found)", e);
+				}
+			case RESOURCE:
+			case URL:
+				try {
+					return this.url.openStream();
+				}
+				catch (IOException e) {
+					throw new IllegalStateException(
+							"Failed to read URL [" + this.url + "]", e);
+				}
+			case UNKNOWN:
+				throw new IllegalStateException(
+						"Unrecognized resource type [" + this.resourceName + "]");
+			default:
+				throw new IllegalStateException(
+						"Programmer Error. Unrecognized resource type ["
+								+ this.resourceName + "] assigned type ["
+								+ this.resourceType + "]");
+			}
+		}
+
+		public static boolean isFile(final String name) {
+			File f = new File(name);
+			return f.exists() && f.isFile() && f.canRead();
+		}
+
+		public static boolean isResource(final String name) {
+			URL url = JMXMPProperties.class.getResource(name);
+			return url != null;
+		}
+
+		public static boolean isURL(final String name) {
+			try {
+				new URL(name);
+				return true;
+			}
+			catch (MalformedURLException uex) {
+				return false;
+			}
+		}
+
+		public static URL toURL(final String name) {
+			try {
+				return new URL(name);
+			}
+			catch (MalformedURLException uex) {
+				throw new RuntimeException("Invalid URL [" + name + "]", uex);
+
+			}
+		}
+
 	}
 
 }
